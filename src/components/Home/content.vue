@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -76,7 +77,20 @@ export default {
   },
   methods: {
     submitHandler() {
-      this.$store.dispatch("foodsearch/dispatchSearch", this.formdata);
+      let api =
+        "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=burger&location=sanfranscico";
+      let token =
+        "Yua-MH2odW4jkldFX860GQ1EBNQG7X7EiWbkol4hOCCFT56D8ZxFPDeZT0DuM-mr29Iy3l-tjAeI6CoXGw1-Zu9coLnmiB2o4yPf4ychMPRM24BOD14kf4FjtigoXHYx";
+      axios
+        .get(api, {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        })
+        .then(response => {
+          console.log(response);
+        });
+      // this.$store.dispatch("foodsearch/dispatchSearch", this.formdata);
     }
   }
 };

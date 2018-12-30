@@ -3,6 +3,10 @@ import './plugins/vuetify'
 import App from "./App.vue";
 import router from "./router";
 import store from "./Store/store";
+import VueAxios from 'vue-axios'
+import axios from 'axios';
+
+Vue.use(VueAxios, axios);
 
 import Vuetify from 'vuetify'
 
