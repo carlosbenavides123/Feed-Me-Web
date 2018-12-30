@@ -14,14 +14,51 @@ function makeApiRequest(url) {
 
 // Our test function
 exports.testApi = functions.https.onRequest((req, res) => {
-    // TODO: process the request, extract parameters, authenticate the user etc
+    // example from docs
+    //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
 
-    // The API url to call - edit this
-    const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyAEAXEZ8Z-3ReCoSukBYutcDpzCvP9R-Jw`;
+    // take out the paramters
+    const radius = req.query.radius
+    const query = req.query.query
+    const lat = req.query.lat
+    const long = req.query.long
 
-    makeApiRequest(url)
+    if (lat == '' || long == '') {
+        res.send("please allow your location!");
+    }
+
+    // api key
+    const ApiKey = 'AIzaSyAEAXEZ8Z-3ReCoSukBYutcDpzCvP9R-Jw'
+
+    // base url (w/o inputs)
+    const baseUrl = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
+
+    // The API url to call
+    // lat and long is required! (at least for now)
+    let api = baseUrl + 'location=' + lat + ',' + long
+
+
+    if (radius) {
+        api = api + '&radius=' + radius
+    }
+
+    api = api + '&type=restaurant'
+
+    if (query) {
+        api = api + '&keyword=' + query
+    }
+
+    api = api + '&key=' + ApiKey
+
+    makeApiRequest(api)
         .then(response => {
-            res.send(response);
+            // var result = retrieveRandom(response)
+            var temp = response.results.length
+            let randIndex = Math.floor(Math.random() * temp)
+            while (response['results'][randIndex]['opening_hours']['open_now'] === false) {
+                let randIndex = Math.floor(Math.random() * temp)
+            }
+            res.send(response['results'][randIndex]);
             return;
         })
         .catch(err => {
