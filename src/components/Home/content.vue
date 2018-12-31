@@ -21,7 +21,7 @@
               </div>
             </v-flex>
 
-            <v-flex xs12>
+            <v-flex xs6>
               <div>
                 <v-select
                   v-model="formdata.radius"
@@ -31,6 +31,30 @@
                   solo
                 ></v-select>
               </div>
+            </v-flex>
+
+            <v-flex xs6>
+              <div>
+                <v-select
+                  v-model="formdata.radius"
+                  :items="ratings"
+                  label="Ratings"
+                  centered
+                  solo
+                ></v-select>
+              </div>
+            </v-flex>
+
+            <v-flex
+              xs12
+              sm6
+              d-flex
+            >
+              <v-select
+                :items="price_range"
+                label="Price Range"
+                outline
+              ></v-select>
             </v-flex>
 
             <div>
@@ -59,6 +83,13 @@ export default {
       loader: null,
       loading: false,
       radius: ["Walking Distance", "Drive", "Search around my city"],
+      ratings: ["5 star", "4 star", "3 star", "2 star", "1 star"],
+      price_range: [
+        "$ - 0.00 to ~ 11.99",
+        "$$ - 12.00 to ~23.99",
+        "$$$ - 24.00 to ~35.99",
+        "$$$$ - 36.00 and up"
+      ],
       formdata: {
         query: "",
         radius: ""
