@@ -1,6 +1,9 @@
 /*eslint-disable */
 const functions = require("firebase-functions");
 const request = require("request-promise");
+const cors = require('cors')({
+  origin: true
+});
 
 /**
  * Makes a GET request to given URL with the access token
@@ -16,6 +19,7 @@ function makeApiRequest(url) {
 exports.testApi = functions.https.onRequest((req, res) => {
   // example from docs
   //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
+  cors(req, res, () => {});
 
   // take out the paramters
   const radius = req.query.radius;

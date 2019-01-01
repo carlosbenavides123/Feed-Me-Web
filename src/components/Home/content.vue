@@ -53,6 +53,7 @@
             >
               <v-select
                 :items="price_range"
+                v-model="formdata.price_range"
                 label="Price Range"
                 outline
               ></v-select>
@@ -91,6 +92,7 @@ export default {
       formdata: {
         query: "",
         radius: "",
+        price_range: "",
         ratings: "",
         lat: "",
         long: ""
@@ -102,30 +104,66 @@ export default {
   },
   methods: {
     submitHandler() {
-      let api =
-        "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=burger&location=sanfranscico";
-      let token =
-        "Yua-MH2odW4jkldFX860GQ1EBNQG7X7EiWbkol4hOCCFT56D8ZxFPDeZT0DuM-mr29Iy3l-tjAeI6CoXGw1-Zu9coLnmiB2o4yPf4ychMPRM24BOD14kf4FjtigoXHYx";
-      axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + token
-          }
-        })
-        .then(response => {
-          console.log(response);
-        });
-      // this.$store.dispatch("foodsearch/dispatchSearch", this.formdata);
+      if (this.formdata.radius) {
+        this.formdata.radius = this.radius_handler(this.formdata.radius);
+      }
+
+      if (this.formdata.ratings)
+        this.formdata.ratings = this.formdata.ratings.charAt(0);
+
+      if (this.formdata.price_range) {
+        this.formdata.price_range = this.price_range_handler(
+          this.formdata.price_range
+        );
+      }
+      this.$store.dispatch("foodsearch/dispatchSearch", this.formdata);
+
+      // let api =
+      //   "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=burger&location=sanfranscico";
+      // let token =
+      //   "Yua-MH2odW4jkldFX860GQ1EBNQG7X7EiWbkol4hOCCFT56D8ZxFPDeZT0DuM-mr29Iy3l-tjAeI6CoXGw1-Zu9coLnmiB2o4yPf4ychMPRM24BOD14kf4FjtigoXHYx";
+      // axios
+      //   .get(api, {
+      //     headers: {
+      //       Authorization: "Bearer " + token
+      //     }
+      //   })
+      //   .then(response => {
+      //     console.log(response);
+      //   });
     },
     retrieveLoc() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
-          console.log(position);
           this.position = position.coords;
           this.formdata.lat = position.coords.latitude;
           this.formdata.long = position.coords.longitude;
         });
       }
+    },
+    radius_handler(rad) {
+      var rtn = "";
+      switch (rad) {
+        case "Walking Distance":
+          rtn = 300;
+          break;
+        case "Drive":
+          rtn = 2000;
+          break;
+        case "Search around my city":
+          rtn = 4000;
+          break;
+        default:
+          rtn = "";
+      }
+      return rtn;
+    },
+    price_range_handler(price) {
+      var i = 0;
+      while (price.charAt(i) == "$") {
+        i++;
+      }
+      return i;
     }
   }
 };
