@@ -24,6 +24,7 @@
             <v-flex xs6>
               <div>
                 <v-select
+                  class="ratings_select"
                   v-model="formdata.radius"
                   :items="radius"
                   label="Radius"
@@ -36,7 +37,7 @@
             <v-flex xs6>
               <div>
                 <v-select
-                  v-model="formdata.radius"
+                  v-model="formdata.ratings"
                   :items="ratings"
                   label="Ratings"
                   centered
@@ -61,9 +62,6 @@
               <v-btn
                 type="submit"
                 class="btnprimary"
-                :loading="loading"
-                :disabled="loading"
-                @click="loader = 'loading'"
                 color="primary"
               >Find me a restaurant!</v-btn>
             </div>
@@ -92,19 +90,15 @@ export default {
       ],
       formdata: {
         query: "",
-        radius: ""
+        radius: "",
+        ratings: "",
+        lat: "",
+        long: ""
       }
     };
   },
-  watch: {
-    loader() {
-      const l = this.loader;
-      this[l] = !this[l];
-
-      setTimeout(() => (this[l] = false), 3000);
-
-      this.loader = null;
-    }
+  mounted() {
+    this.retrieveLoc();
   },
   methods: {
     submitHandler() {
@@ -122,6 +116,16 @@ export default {
           console.log(response);
         });
       // this.$store.dispatch("foodsearch/dispatchSearch", this.formdata);
+    },
+    retrieveLoc() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          console.log(position);
+          this.position = position.coords;
+          this.formdata.lat = position.coords.latitude;
+          this.formdata.long = position.coords.longitude;
+        });
+      }
     }
   }
 };
@@ -140,5 +144,8 @@ export default {
   text-align: justify;
   display: block;
   width: 100%;
+}
+.ratings_select {
+  position: absolutes;
 }
 </style>
