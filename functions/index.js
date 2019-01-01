@@ -1,6 +1,9 @@
 /*eslint-disable */
 const functions = require("firebase-functions");
 const request = require("request-promise");
+const cors = require('cors')({
+  origin: true
+});
 
 /**
  * Makes a GET request to given URL with the access token
