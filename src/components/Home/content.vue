@@ -7,6 +7,7 @@
             row
             wrap
           >
+
             <v-flex xs12>
               <div class="v-text_field">
                 <v-text-field
@@ -67,6 +68,15 @@
               >Find me a restaurant!</v-btn>
             </div>
 
+            <v-progress-circular
+              class="loadMiddle"
+              v-if="loading"
+              :size="70"
+              :width="7"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+
           </v-layout>
         </v-container>
       </form>
@@ -79,7 +89,6 @@ import axios from "axios";
 export default {
   data() {
     return {
-      loader: null,
       loading: false,
       radius: ["Walking Distance", "Drive", "Search around my city"],
       ratings: ["5 star", "4 star", "3 star", "2 star", "1 star"],
@@ -104,6 +113,7 @@ export default {
   },
   methods: {
     submitHandler() {
+      this.loading = true;
       if (this.formdata.radius) {
         this.formdata.radius = this.radius_handler(this.formdata.radius);
       }
@@ -185,5 +195,15 @@ export default {
 }
 .ratings_select {
   position: absolutes;
+}
+
+.loadMiddle {
+  position: fixed;
+  left: 50%;
+  top: 35%;
+  display: none;
+  z-index: 1000;
+  height: 31px;
+  width: 31px;
 }
 </style>

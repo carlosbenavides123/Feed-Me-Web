@@ -1,9 +1,22 @@
 /*eslint-disable */
 const functions = require("firebase-functions");
 const request = require("request-promise");
-const cors = require('cors')({
+const cors = require("cors")({
   origin: true
 });
+
+var randomFood = [
+  "burger",
+  "chicken",
+  "pizza",
+  "bbq",
+  "vietnamese",
+  "chinese",
+  "korean",
+  "pho",
+  "mexican",
+  "burrito"
+];
 
 /**
  * Makes a GET request to given URL with the access token
@@ -17,48 +30,56 @@ function makeApiRequest(url) {
 
 // Our test function
 exports.testApi = functions.https.onRequest((req, res) => {
+  var query;
+  var radius;
+
   // example from docs
   //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
-  cors(req, res, () => {});
+  if (req.query.radius.length < 3) {
+    query = randomFood[Math.floor(Math.random() * randomFood.length)];
+  } else {
+    query = req.query.radius;
+  }
 
+  if (req.query.radius.length < 3) {
+    radius = 300;
+  } else {
+    radius = req.query.radius;
+  }
   // take out the paramters
-  const radius = req.query.radius;
-  const query = req.query.query;
-  const lat = req.query.lat;
-  const long = req.query.long;
+  // var radius = 300;
+  // var query = randomFood[Math.floor(Math.random() * randomFood.length)];
+  let lat = req.query.lat;
+  let long = req.query.long;
+
+  cors(req, res, () => {});
 
   if (lat == "" || long == "") {
     res.send("please allow your location!");
   }
 
   // api key
-  const ApiKey = "AIzaSyAEAXEZ8Z-3ReCoSukBYutcDpzCvP9R-Jw";
+  let ApiKey = "AIzaSyAEAXEZ8Z-3ReCoSukBYutcDpzCvP9R-Jw";
 
   // base url (w/o inputs)
-  const baseUrl =
-    "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
+  let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
 
   // The API url to call
   // lat and long is required! (at least for now)
-  let api = baseUrl + "location=" + lat + "," + long;
+  var api = baseUrl + "location=" + lat + "," + long;
 
-  if (radius) {
-    api = api + "&radius=" + radius;
-  }
+  api = api + "&radius=" + radius;
 
   api = api + "&type=restaurant";
 
-  if (query) {
-    api = api + "&keyword=" + query;
-  }
+  api = api + "&keyword=" + query;
 
   api = api + "&key=" + ApiKey;
 
   makeApiRequest(api)
     .then(response => {
-      // var result = retrieveRandom(response)
       var temp = response.results.length;
-      let randIndex = Math.floor(Math.random() * temp);
+      var randIndex = Math.floor(Math.random() * temp);
       while (
         response["results"][randIndex]["opening_hours"]["open_now"] === false
       ) {
@@ -68,7 +89,10 @@ exports.testApi = functions.https.onRequest((req, res) => {
       return;
     })
     .catch(err => {
-      res.status(500).send(err);
+      errormsg = {
+        message: "oops"
+      };
+      res.status(500).send(errormsg);
     });
 });
 
