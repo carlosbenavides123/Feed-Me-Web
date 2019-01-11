@@ -37,13 +37,28 @@ const foodsearch = {
         dispatchSearch({
             commit
         }, payload) {
-
-            const api = `https://us-central1-feed-me-acf1c.cloudfunctions.net/testApi?radius=''&query=''&lat=${payload.lat}&long=${payload.long}`
+            var q;
+            if (!payload.radius) {
+                payload.radius = "\'\'"
+            }
+            if (!payload.query) {
+                q = "\'\'"
+            } else {
+                q = payload.query
+            }
+            if (!payload.price_range) {
+                payload.price_range = "\'\'"
+            }
+            const api = `https://us-central1-feed-me-acf1c.cloudfunctions.net/testApi?radius=${payload.radius}&query=${q}&lat=${payload.lat}&long=${payload.long}`;
+            console.log(api);
             Vue.axios
                 .post(api)
                 .then(response => {
                     console.log(response)
                     commit("googleApiExtract", response)
+                })
+                .catch(err => {
+                    console.log(err)
                 });
         }
     }

@@ -3,11 +3,7 @@
     <v-card>
       <form @submit.prevent="submitHandler">
         <v-container>
-          <v-layout
-            row
-            wrap
-          >
-
+          <v-layout row wrap>
             <v-flex xs12>
               <div class="v-text_field">
                 <v-text-field
@@ -37,21 +33,11 @@
 
             <v-flex xs6>
               <div>
-                <v-select
-                  v-model="formdata.ratings"
-                  :items="ratings"
-                  label="Ratings"
-                  centered
-                  solo
-                ></v-select>
+                <v-select v-model="formdata.ratings" :items="ratings" label="Ratings" centered solo></v-select>
               </div>
             </v-flex>
 
-            <v-flex
-              xs12
-              sm6
-              d-flex
-            >
+            <v-flex xs12 sm6 d-flex>
               <v-select
                 :items="price_range"
                 v-model="formdata.price_range"
@@ -61,11 +47,7 @@
             </v-flex>
 
             <div>
-              <v-btn
-                type="submit"
-                class="btnprimary"
-                color="primary"
-              >Find me a restaurant!</v-btn>
+              <v-btn type="submit" class="btnprimary" color="primary">Find me a restaurant!</v-btn>
             </div>
 
             <v-progress-circular
@@ -76,7 +58,6 @@
               color="purple"
               indeterminate
             ></v-progress-circular>
-
           </v-layout>
         </v-container>
       </form>
@@ -113,19 +94,10 @@ export default {
   },
   methods: {
     submitHandler() {
+      if (!this.formdata.lat || !this.formdata.long) {
+        this.retrieveLoc();
+      }
       this.loading = true;
-      if (this.formdata.radius) {
-        this.formdata.radius = this.radius_handler(this.formdata.radius);
-      }
-
-      if (this.formdata.ratings)
-        this.formdata.ratings = this.formdata.ratings.charAt(0);
-
-      if (this.formdata.price_range) {
-        this.formdata.price_range = this.price_range_handler(
-          this.formdata.price_range
-        );
-      }
       this.$store.dispatch("foodsearch/dispatchSearch", this.formdata);
 
       // let api =
@@ -148,32 +120,9 @@ export default {
           this.position = position.coords;
           this.formdata.lat = position.coords.latitude;
           this.formdata.long = position.coords.longitude;
-        });
+        }),
+          { timeout: 10000 };
       }
-    },
-    radius_handler(rad) {
-      var rtn = "";
-      switch (rad) {
-        case "Walking Distance":
-          rtn = 300;
-          break;
-        case "Drive":
-          rtn = 2000;
-          break;
-        case "Search around my city":
-          rtn = 4000;
-          break;
-        default:
-          rtn = "";
-      }
-      return rtn;
-    },
-    price_range_handler(price) {
-      var i = 0;
-      while (price.charAt(i) == "$") {
-        i++;
-      }
-      return i;
     }
   }
 };
