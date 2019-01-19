@@ -5,10 +5,10 @@ const foodsearch = {
     namespaced: true,
     state: {
         restaurantName: "",
+        rating: 0,
         lat: "",
         long: "",
-        ratings: "",
-        yelpPlacesAPI: ""
+        showResult: false
     },
     getters: {
         getRestaurant(state) {
@@ -21,16 +21,20 @@ const foodsearch = {
             return state.long;
         },
         getRating(state) {
-            return state.ratings;
+            return state.rating;
+        },
+        getShowResult(state) {
+            return state.showResult;
         }
     },
     mutations: {
         googleApiExtract(state, elgoog) {
-            console.log(elgoog)
+            console.log(elgoog);
             state.restaurantName = elgoog.data.name;
-            state.ratings = elgoog.data.ratings;
+            state.rating = elgoog.data.rating;
             state.lat = elgoog.data.geometry.location.lat;
             state.long = elgoog.data.geometry.location.lng;
+            state.showResult = true;
         }
     },
     actions: {
@@ -54,7 +58,6 @@ const foodsearch = {
             Vue.axios
                 .post(api)
                 .then(response => {
-                    console.log(response)
                     commit("googleApiExtract", response)
                 })
                 .catch(err => {
