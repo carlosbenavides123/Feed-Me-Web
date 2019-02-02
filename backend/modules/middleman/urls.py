@@ -1,9 +1,9 @@
 from django.urls import path
 
-from modules.middleman import views
+from modules.middleman.Domain import views
 
 app_name = 'middleman'
 
 urlpatterns = [
-    path('google_food/', views.google_food.as_view(), name='google_food'),
+    path('google_food/', views.ExternalApiView.as_view(), name='google_food'),
 ]
