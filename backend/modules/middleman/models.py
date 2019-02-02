@@ -1,20 +1,13 @@
-# from django.db import models
-
-# from django.contrib.auth.models import (
-#     AbstractBaseUser,
-#     # BaseUserManager,
-#     # PermissionsMixin
-# )
+from django.db import models
 
 
+class GoogleApiResponse(models.Model):
+    """ Ingredient to be used in a recipe """
+    name = models.CharField(max_length=255)
+    # user = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL,
+    #     on_delete=models.CASCADE
+    # )
 
-# class GoogleApiResponse(models.Model):
-#     """ Ingredient to be used in a recipe """
-#     name = models.CharField(max_length=255)
-#     user = models.ForeignKey(
-#         settings.AUTH_USER_MODEL,
-#         on_delete=models.CASCADE
-#     )
-
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.name

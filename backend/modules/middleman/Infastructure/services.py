@@ -1,5 +1,6 @@
+from rest_framework.response import Response
+
 
 class Google_API():
-    def get_google_food(self, requests):
-        print(123)
-        return 123
+    def get_google_food():
+        return Response({"lol": 123})
