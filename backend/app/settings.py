@@ -128,3 +128,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+YELP_API_KEY = os.environ.get('YELP_API_KEY')
