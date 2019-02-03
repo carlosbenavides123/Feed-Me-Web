@@ -1,13 +1,14 @@
 from rest_framework.response import Response
 
-import os
+from django.conf import settings
 
+import requests
 
-# GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mongolian%20grill&"\
-#                     "inputtype=textquery&fields=photos,"\
-#                     "formatted_address,name,opening_hours,rating&locationbias="\
-#                     "circle:2000@47.6918452,-122.2226413&"\
-#                     "key=" + MY_CUSTOM_SETTING
+GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mongolian%20grill&"\
+                    "inputtype=textquery&fields=photos,"\
+                    "formatted_address,name,opening_hours,rating&locationbias="\
+                    "circle:2000@47.6918452,-122.2226413&"\
+                    "key=" + settings.GOOGLE_API_KEY
 
 
 class Google_API():
@@ -17,8 +18,11 @@ class Google_API():
         pass
 
     def get_google_food(self):
-        return Response(os.environ)
+        return self.google_API_Caller()
 
-    # def google_API_Caller(self):
-    #     """ Call the API """
-    #     return GOOGLE_PLACES_URL
+    def google_API_Caller(self):
+        """ Call the API """
+        url = GOOGLE_PLACES_URL
+        res = requests.get(url)
+        res = res.json()
+        return res

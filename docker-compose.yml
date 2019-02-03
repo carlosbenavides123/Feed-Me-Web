@@ -17,6 +17,7 @@ services:
       - DB_NAME=backend
       - DB_USER=${DB_USERNAME}
       - DB_PASS=${DB_PASSWORD}
+      - GOOGLE_API_KEY=${google_api_key}
     depends_on:
       - db
 
