@@ -3,13 +3,15 @@ from rest_framework.response import Response
 from django.conf import settings
 
 import requests
-
-GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mongolian%20grill&"\
-                    "inputtype=textquery&fields=photos,"\
-                    "formatted_address,name,opening_hours,rating&locationbias="\
-                    "circle:2000@47.6918452,-122.2226413&"\
+# location=-33.8670522,151.1957362&radius=1500&type=restaurant=cruise&key=AIzaSyAEAXEZ8Z-3ReCoSukBYutcDpzCvP9R-Jw
+GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"\
+                    "location=34.0207289,-118.6926019"\
+                    "&radius=1500&type=restaurant"\
+                    "&keyword=chicken&"\
                     "key=" + settings.GOOGLE_API_KEY
 
+
+YELP_PLACES_URL = "https://api.yelp.com/v3/businesses/search"
 YELP_REVIEWS_URL = "https://api.yelp.com/v3/businesses/WavvLdfdP6g8aZTtbBQHTw/reviews"
 
 
@@ -19,15 +21,22 @@ class Google_API():
         self.get_google_food()
         pass
 
-    def get_google_food(self):
-        return self.google_API_Caller()
-
     def google_API_Caller(self):
         """ Call the API """
         url = GOOGLE_PLACES_URL
         res = requests.get(url)
         res = res.json()
-        return Response(res)
+        return Response({"lol": GOOGLE_PLACES_URL})
+
+    def get_google_food(self):
+        """ From the response, choose a random restaurant """
+        return self.google_API_Caller()
+
+    def yelp_api_checker(self, res):
+        """ From the randomly chose restaurants,
+            check if their exists an associated yelp business id,
+            which will be used for yelp api calls """
+
 
 
 class Yelp_API():

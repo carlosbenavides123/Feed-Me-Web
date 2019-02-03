@@ -9,11 +9,11 @@ class ExternalApiView(generics.CreateAPIView):
     serializer_class = serializers.GoogleSerializer
 
     def get(self, request):
-        return self.yelp_review(request)
+        return self.google_food(request)
 
     def google_food(self, request):
         goog = Google_API()
-        return goog.get_google_food()
+        return goog.google_API_Caller()
 
     def yelp_review(self, request):
         yelp = Yelp_API()
