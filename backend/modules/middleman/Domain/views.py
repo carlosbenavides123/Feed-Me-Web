@@ -12,4 +12,5 @@ class ExternalApiView(generics.CreateAPIView):
         return self.google_food(request)
 
     def google_food(self, request):
-        return Google_API.get_google_food()
+        goog = Google_API()
+        return goog.get_google_food()
