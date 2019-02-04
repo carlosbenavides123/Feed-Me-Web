@@ -13,7 +13,7 @@ class ExternalApiView(generics.CreateAPIView):
 
     def google_food(self, request):
         goog = Google_API()
-        return goog.google_API_Caller()
+        return goog.get_google_food()
 
     def yelp_review(self, request):
         yelp = Yelp_API()

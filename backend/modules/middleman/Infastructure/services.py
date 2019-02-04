@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from django.conf import settings
 
 import requests
-# location=-33.8670522,151.1957362&radius=1500&type=restaurant=cruise&key=AIzaSyAEAXEZ8Z-3ReCoSukBYutcDpzCvP9R-Jw
+
+from random import randint
+
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"\
                     "location=34.0207289,-118.6926019"\
                     "&radius=1500&type=restaurant"\
@@ -26,17 +28,53 @@ class Google_API():
         url = GOOGLE_PLACES_URL
         res = requests.get(url)
         res = res.json()
-        return Response({"lol": GOOGLE_PLACES_URL})
+        return res
 
     def get_google_food(self):
         """ From the response, choose a random restaurant """
-        return self.google_API_Caller()
+        res = self.google_API_Caller()
+
+        if not res['results']:
+            self.return_error_message()
+
+        randomResult = self.retrieve_random(res)
+
+        while res['results'][randomResult]['opening_hours']['open_now'] is False:
+            if not res['results']:
+                self.return_error_message
+            del res['results'][randomResult]
+            randomResult = self.retrieve_random(res)
+        return Response({"LOL":res['results'][randomResult]})
+
+    def retrieve_random(self, res):
+        randIdx = randint(0, len(res['results']) - 1)
+        return randIdx
+
+    def retrieve_yelp_id(self, res):
+        """ From the randomly chosen restaurant
+            Find the corressponding yelp business ID"""
+        headers = {'Authorization': 'bearer %s' % settings.YELP_API_KEY}
+        params = {
+            "location": res['vicinity'],
+            "latitude": res['geometry']['location']['lng'],
+            "longitude": res['geometry']['location']['lng']
+        }
+        res = requests.get(YELP_PLACES_URL, params=params, headers=headers)
+        target = res["name"]
+
+        # for json in res['businesses']:
+        #     if target == json['']
+        return 
+
+    def return_error_message(self):
+        return Response({"error": "There might have been an issue with your"
+                         "food choice."})
 
     def yelp_api_checker(self, res):
         """ From the randomly chose restaurants,
             check if their exists an associated yelp business id,
             which will be used for yelp api calls """
-
+        
 
 
 class Yelp_API():
@@ -58,9 +96,9 @@ class Yelp_API():
         headers = {'Authorization': 'bearer %s' % settings.YELP_API_KEY}
         url = "https://api.yelp.com/v3/businesses/search"
         params = {
-            "location": "9345 Reseda Blvd, Northridge, CA 91324",
-            "latitude": 34.2404185,
-            "longitude": -118.5385539
+            "location": "3939 Cross Creek Rd, Malibu",
+            "latitude": 34.0207289,
+            "longitude": 34.0207289
         }
 
         res = requests.get(url, params=params, headers=headers)
